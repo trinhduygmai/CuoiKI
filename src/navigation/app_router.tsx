@@ -14,7 +14,16 @@ import ProfilePage from '../pages/ProfilePage';
 import Layout from '../components/Layout';
 
 export default function AppRouter() {
-  const { user } = useGlobal();
+  const { user, isLoading } = useGlobal();
+
+  if (isLoading) {
+    return (
+      <div className="h-full flex flex-col items-center justify-center bg-white">
+        <div className="w-16 h-16 border-4 border-brand border-t-transparent rounded-full animate-spin mb-4" />
+        <span className="text-zinc-400 text-xs font-bold uppercase tracking-widest">Checking Auth...</span>
+      </div>
+    );
+  }
 
   return (
     <Routes>

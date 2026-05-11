@@ -7,7 +7,7 @@ import { cn } from '../lib/utils';
 import HeaderMenuButton from './buttons/HeaderMenuButton';
 
 export default function Layout({ children, showHeader = true }: { children: React.ReactNode, showHeader?: boolean }) {
-  const { user, setUser, cart, setCart, isDrawerOpen, setIsDrawerOpen } = useGlobal();
+  const { user, logout, cart, setCart, isDrawerOpen, setIsDrawerOpen } = useGlobal();
   const navigate = useNavigate();
 
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
@@ -19,7 +19,7 @@ export default function Layout({ children, showHeader = true }: { children: Reac
   ];
 
   const handleLogout = () => {
-    setUser(null);
+    logout();
     setCart([]);
     navigate('/login');
   };

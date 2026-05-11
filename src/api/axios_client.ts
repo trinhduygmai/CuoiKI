@@ -1,7 +1,9 @@
 import axios from 'axios';
+import { tokenService } from '../services/token_service';
+import { API_BASE_URL } from '../constants';
 
 const axiosClient = axios.create({
-  baseURL: 'https://api.example.com/v1', // Replace with your real API URL
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -10,7 +12,7 @@ const axiosClient = axios.create({
 // Request Interceptor
 axiosClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = tokenService.getAccessToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -27,7 +29,10 @@ axiosClient.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    // Handle global errors here (e.g., 401 unauthorized)
+    if (error.response?.status === 401) {
+      tokenService.clearTokens();
+      window.location.href = '/login';
+    }
     return Promise.reject(error);
   }
 );

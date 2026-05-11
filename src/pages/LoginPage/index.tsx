@@ -2,19 +2,33 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGlobal } from '../../context/GlobalContext';
 import { motion } from 'motion/react';
-import { Mail, Lock, LogIn } from 'lucide-react';
+import { Mail, Lock, LogIn, Loader2 } from 'lucide-react';
+import { dataService } from '../../services/data_service';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { setUser } = useGlobal();
   const navigate = useNavigate();
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !password) return alert('Please enter both email and password');
     
-    setUser({ fullName: email.split('@')[0], email });
-    navigate('/home');
+    setIsSubmitting(true);
+    try {
+      const user = await dataService.login(email, password);
+      if (user) {
+        setUser(user);
+        navigate('/home');
+      } else {
+        alert('Invalid credentials');
+      }
+    } catch (error) {
+      alert('An error occurred during login');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -59,10 +73,17 @@ export default function LoginScreen() {
 
         <button
           onClick={handleLogin}
-          className="w-full bg-brand text-white py-4 rounded-2xl font-bold shadow-xl shadow-brand/20 flex items-center justify-center gap-2 active:scale-95 transition-all mt-8"
+          disabled={isSubmitting}
+          className="w-full bg-brand text-white py-4 rounded-2xl font-bold shadow-xl shadow-brand/20 flex items-center justify-center gap-2 active:scale-95 transition-all mt-8 disabled:opacity-70 disabled:active:scale-100"
         >
-          LOGIN
-          <LogIn className="w-5 h-5" />
+          {isSubmitting ? (
+            <Loader2 className="w-5 h-5 animate-spin" />
+          ) : (
+            <>
+              LOGIN
+              <LogIn className="w-5 h-5" />
+            </>
+          )}
         </button>
       </div>
 

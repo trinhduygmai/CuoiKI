@@ -22,8 +22,15 @@ export interface CartItem extends Food {
 }
 
 export interface User {
+  id: string;
   fullName: string;
   email: string;
+}
+
+export interface AuthResponse {
+  accessToken: string;
+  refreshToken: string;
+  user: User;
 }
 
 export type Screen = 'details' | 'checkout' | 'order';
