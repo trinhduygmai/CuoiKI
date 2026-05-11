@@ -8,7 +8,7 @@ class HeaderMenuButton extends StatelessWidget {
   const HeaderMenuButton({
     super.key, 
     this.onTap,
-    this.icon = Icons.menu_rounded,
+    this.icon = Icons.notes_rounded,
   });
 
   @override
