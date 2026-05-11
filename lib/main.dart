@@ -12,6 +12,8 @@ import 'screens/checkout_screen.dart';
 import 'screens/payment_success_screen.dart';
 import 'types/types.dart';
 
+import 'theme/app_theme.dart';
+
 void main() {
   runApp(
     MultiProvider(
@@ -31,12 +33,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Food Delivery',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFFF4B3A)),
-        useMaterial3: true,
-        textTheme: GoogleFonts.interTextTheme(),
-        scaffoldBackgroundColor: const Color(0xFFF9F9F9),
-      ),
+      theme: AppTheme.lightTheme,
       initialRoute: '/',
       onGenerateRoute: (settings) {
         if (settings.name == '/') {

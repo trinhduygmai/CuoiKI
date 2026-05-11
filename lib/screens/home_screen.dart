@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../widgets/header_menu_button.dart';
+import '../widgets/food_card.dart';
 import '../api/food_api.dart';
 import '../types/types.dart';
+import '../theme/app_theme.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,6 +15,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<Food> foods = [];
   bool isLoading = true;
+  String selectedCategory = 'Pizza';
 
   @override
   void initState() {
@@ -36,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -44,39 +47,42 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const HeaderMenuButton(),
-                    GestureDetector(
+                    HeaderMenuButton(
+                      icon: Icons.person_outline,
                       onTap: () => Navigator.pushNamed(context, '/profile'),
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
-                          border: Border.all(color: Colors.grey.shade100),
-                        ),
-                        child: const Icon(Icons.person_outline, size: 24),
-                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 32),
-                const Text(
+                Text(
                   'Delicious\nfood for you',
-                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.w900),
+                  style: Theme.of(context).textTheme.displayLarge,
                 ),
                 const SizedBox(height: 32),
-                // Search Bar
+                // Custom Search
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  height: 60,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(30),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(AppTheme.radiusM),
+                    boxShadow: AppTheme.softShadow,
+                    border: Border.all(color: AppTheme.border),
                   ),
-                  child: const TextField(
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.search, color: Colors.black54),
-                      hintText: 'Search',
-                      border: InputBorder.none,
-                    ),
+                  child: const Row(
+                    children: [
+                      Icon(Icons.search, color: AppTheme.textSecondary),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: 'Search delicious food',
+                            hintStyle: TextStyle(color: AppTheme.textMuted),
+                            border: InputBorder.none,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 32),
@@ -85,25 +91,29 @@ class _HomeScreenState extends State<HomeScreen> {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: ['Pizza', 'Fast Food', 'Chicken', 'Snacks', 'Sauce'].map((cat) {
+                      bool isSelected = selectedCategory == cat;
                       return Padding(
-                        padding: const EdgeInsets.only(right: 20.0),
+                        padding: const EdgeInsets.only(right: 24.0),
                         child: GestureDetector(
-                          onTap: () => Navigator.pushNamed(context, '/list', arguments: cat),
+                          onTap: () => setState(() => selectedCategory = cat),
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 cat,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black87,
+                                style: TextStyle(
+                                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                                  fontSize: 16,
+                                  color: isSelected ? AppTheme.primary : AppTheme.textMuted,
                                 ),
                               ),
-                              const SizedBox(height: 4),
-                              Container(
-                                height: 3, 
-                                width: 24, 
+                              const SizedBox(height: 6),
+                              AnimatedContainer(
+                                duration: const Duration(milliseconds: 300),
+                                height: 3,
+                                width: isSelected ? 24 : 0,
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFFF4B3A),
+                                  color: AppTheme.primary,
                                   borderRadius: BorderRadius.circular(2),
                                 ),
                               ),
@@ -115,89 +125,42 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 const SizedBox(height: 32),
-                // Horizontal Scroll Food
-                SizedBox(
-                  height: 320,
-                  child: isLoading 
-                    ? const Center(child: CircularProgressIndicator(color: Color(0xFFFF4B3A)))
-                    : foods.isEmpty
-                      ? const Center(child: Text('No food available'))
-                      : ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: foods.length,
-                          itemBuilder: (context, index) {
-                            final food = foods[index];
-                            return GestureDetector(
-                              onTap: () => Navigator.pushNamed(context, '/detail', arguments: food),
-                              child: Container(
-                                width: 220,
-                                margin: const EdgeInsets.only(right: 20, bottom: 20, top: 20),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(30),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.05),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 5),
-                                    ),
-                                  ],
-                                ),
-                                child: Stack(
-                                  clipBehavior: Clip.none,
-                                  alignment: Alignment.topCenter,
-                                  children: [
-                                    Positioned(
-                                      top: -20,
-                                      child: Container(
-                                        width: 130,
-                                        height: 130,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.black.withOpacity(0.1),
-                                              blurRadius: 20,
-                                              offset: const Offset(0, 10),
-                                            ),
-                                          ],
-                                        ),
-                                        child: ClipOval(
-                                          child: food.image.isNotEmpty 
-                                            ? Image.network(food.image, fit: BoxFit.cover, errorBuilder: (_, __, ___) => const Icon(Icons.fastfood, size: 50))
-                                            : const Icon(Icons.fastfood, size: 50),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 130.0, left: 16, right: 16),
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            food.name,
-                                            textAlign: TextAlign.center,
-                                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                                            maxLines: 2,
-                                          ),
-                                          const SizedBox(height: 16),
-                                          Text(
-                                            '\$${food.price}',
-                                            style: const TextStyle(
-                                              color: Color(0xFFFF4B3A),
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 17,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Popular Foods',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.textMain),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pushNamed(context, '/list', arguments: selectedCategory),
+                      child: const Text('See all', style: TextStyle(color: AppTheme.primary, fontWeight: FontWeight.w600)),
+                    ),
+                  ],
                 ),
+                const SizedBox(height: 16),
+                isLoading 
+                  ? const Center(child: Padding(
+                      padding: EdgeInsets.all(40.0),
+                      child: CircularProgressIndicator(color: AppTheme.primary),
+                    ))
+                  : foods.isEmpty
+                    ? Center(
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 40),
+                            Icon(Icons.fastfood_outlined, size: 64, color: Colors.grey.shade300),
+                            const SizedBox(height: 16),
+                            const Text('No food available right now', style: TextStyle(color: AppTheme.textSecondary)),
+                          ],
+                        ),
+                      )
+                    : Column(
+                        children: foods.map((food) => FoodCard(
+                          food: food,
+                          onTap: () => Navigator.pushNamed(context, '/detail', arguments: food),
+                        )).toList(),
+                      ),
               ],
             ),
           ),

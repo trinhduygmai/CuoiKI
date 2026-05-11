@@ -1,34 +1,34 @@
 import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
 
 class HeaderMenuButton extends StatelessWidget {
   final VoidCallback? onTap;
+  final IconData icon;
 
-  const HeaderMenuButton({super.key, this.onTap});
+  const HeaderMenuButton({
+    super.key, 
+    this.onTap,
+    this.icon = Icons.menu_rounded,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap ?? () => Scaffold.of(context).openDrawer(),
       child: Container(
-        width: 48,
-        height: 48,
+        width: 50,
+        height: 50,
         decoration: BoxDecoration(
           color: Colors.white,
           shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-          border: Border.all(color: Colors.grey.shade50),
+          boxShadow: AppTheme.softShadow,
+          border: Border.all(color: AppTheme.border),
         ),
-        child: const Center(
+        child: Center(
           child: Icon(
-            Icons.menu_rounded,
+            icon,
             size: 24,
-            color: Colors.black,
+            color: AppTheme.secondary,
           ),
         ),
       ),

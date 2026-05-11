@@ -43,6 +43,13 @@ class Food {
   }
 }
 
+class CartItem {
+  final Food food;
+  int quantity;
+
+  CartItem({required this.food, this.quantity = 1});
+}
+
 class AuthResponse {
   final String accessToken;
   final String refreshToken;

@@ -6,10 +6,45 @@ import '../types/types.dart';
 class GlobalProvider extends ChangeNotifier {
   User? _currentUser;
   bool _isLoading = true;
+  final List<CartItem> _cartItems = [];
 
   User? get currentUser => _currentUser;
   bool get isLoading => _isLoading;
   bool get isAuthenticated => _currentUser != null;
+  List<CartItem> get cartItems => _cartItems;
+  double get totalAmount => _cartItems.fold(0, (sum, item) => sum + (double.parse(item.food.price) * item.quantity));
+
+  void addToCart(Food food, {int quantity = 1}) {
+    final index = _cartItems.indexWhere((item) => item.food.id == food.id);
+    if (index >= 0) {
+      _cartItems[index].quantity += quantity;
+    } else {
+      _cartItems.add(CartItem(food: food, quantity: quantity));
+    }
+    notifyListeners();
+  }
+
+  void removeFromCart(String foodId) {
+    _cartItems.removeWhere((item) => item.food.id == foodId);
+    notifyListeners();
+  }
+
+  void updateQuantity(String foodId, int quantity) {
+    if (quantity <= 0) {
+      removeFromCart(foodId);
+      return;
+    }
+    final index = _cartItems.indexWhere((item) => item.food.id == foodId);
+    if (index >= 0) {
+      _cartItems[index].quantity = quantity;
+      notifyListeners();
+    }
+  }
+
+  void clearCart() {
+    _cartItems.clear();
+    notifyListeners();
+  }
 
   Future<void> checkAuth() async {
     _isLoading = true;

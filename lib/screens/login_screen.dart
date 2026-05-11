@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../context/global_provider.dart';
+import '../theme/app_theme.dart';
+import '../widgets/custom_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -45,37 +47,61 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 80.0),
+          padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 100.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Welcome Back',
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Login to continue your order',
-                style: TextStyle(color: Colors.grey.shade400, fontSize: 14),
-              ),
-              const SizedBox(height: 48),
-              _buildInput('Email', _emailController, Icons.email_outlined),
-              const SizedBox(height: 16),
-              _buildInput('Password', _passwordController, Icons.lock_outline, isPassword: true),
-              const SizedBox(height: 48),
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: _isSubmitting ? null : _handleLogin,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFF4B3A),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  ),
-                  child: _isSubmitting
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text('LOGIN', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              const Center(
+                child: Icon(
+                  Icons.fastfood_rounded,
+                  size: 80,
+                  color: AppTheme.primary,
                 ),
+              ),
+              const SizedBox(height: 60),
+              Text(
+                'Welcome Back',
+                style: Theme.of(context).textTheme.displayMedium,
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                'Sign in to access your favorite food and previous orders.',
+                style: TextStyle(color: AppTheme.textSecondary, fontSize: 15, height: 1.5),
+              ),
+              const SizedBox(height: 48),
+              _buildInput('Email Address', _emailController, Icons.alternate_email_rounded),
+              const SizedBox(height: 24),
+              _buildInput('Password', _passwordController, Icons.lock_outline_rounded, isPassword: true),
+              const SizedBox(height: 16),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {},
+                  child: const Text(
+                    'Forgot Password?',
+                    style: TextStyle(color: AppTheme.primary, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 40),
+              CustomButton(
+                label: 'SIGN IN',
+                isLoading: _isSubmitting,
+                onPressed: _handleLogin,
+              ),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Don\'t have an account? ', style: TextStyle(color: AppTheme.textSecondary)),
+                  GestureDetector(
+                    onTap: () {},
+                    child: const Text(
+                      'Sign Up',
+                      style: TextStyle(color: AppTheme.primary, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -88,18 +114,31 @@ class _LoginScreenState extends State<LoginScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-        const SizedBox(height: 8),
-        TextField(
-          controller: controller,
-          obscureText: isPassword,
-          decoration: InputDecoration(
-            prefixIcon: Icon(icon, color: Colors.grey.shade300, size: 20),
-            filled: true,
-            fillColor: Colors.grey.shade50,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide.none,
+        Text(
+          label, 
+          style: const TextStyle(
+            fontWeight: FontWeight.w700, 
+            fontSize: 14, 
+            color: AppTheme.textMain,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          decoration: BoxDecoration(
+            color: AppTheme.background,
+            borderRadius: BorderRadius.circular(AppTheme.radiusM),
+            border: Border.all(color: AppTheme.border),
+          ),
+          child: TextField(
+            controller: controller,
+            obscureText: isPassword,
+            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+            decoration: InputDecoration(
+              prefixIcon: Icon(icon, color: AppTheme.textMuted, size: 22),
+              hintText: isPassword ? '••••••••' : 'Enter your email',
+              hintStyle: const TextStyle(color: AppTheme.textMuted, fontWeight: FontWeight.w400),
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(vertical: 18),
             ),
           ),
         ),
