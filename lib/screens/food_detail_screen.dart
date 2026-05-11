@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../context/global_provider.dart';
 import '../types/types.dart';
 import '../theme/app_theme.dart';
 import '../widgets/custom_button.dart';
