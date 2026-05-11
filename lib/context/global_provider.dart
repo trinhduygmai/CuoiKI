@@ -88,4 +88,12 @@ class GlobalProvider extends ChangeNotifier {
     _currentUser = null;
     notifyListeners();
   }
+
+  Future<bool> forgotPassword(String email) async {
+    return await AuthService.forgotPassword(email);
+  }
+
+  Future<bool> resetPassword(String token, String password) async {
+    return await AuthService.resetPassword(token, password);
+  }
 }

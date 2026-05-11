@@ -38,4 +38,12 @@ class AuthService {
       return null;
     }
   }
+
+  static Future<bool> forgotPassword(String email) async {
+    return await UserApi.forgotPassword(email);
+  }
+
+  static Future<bool> resetPassword(String token, String password) async {
+    return await UserApi.resetPassword(token, password);
+  }
 }

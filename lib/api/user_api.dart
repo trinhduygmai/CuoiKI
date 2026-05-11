@@ -59,4 +59,25 @@ class UserApi {
       return null;
     }
   }
+
+  static Future<bool> forgotPassword(String email) async {
+    try {
+      await DioClient.instance.post('/forgot-password', data: {'email': email});
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  static Future<bool> resetPassword(String token, String password) async {
+    try {
+      await DioClient.instance.post('/reset-password', data: {
+        'token': token,
+        'password': password,
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }
