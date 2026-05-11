@@ -18,21 +18,37 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Food> foods = [];
+  List<Category> categories = [];
   bool isLoading = true;
+  bool isCategoriesLoading = true;
   String selectedCategory = 'Pizza';
 
   @override
   void initState() {
     super.initState();
-    _fetchFoods();
+    _fetchData();
   }
 
-  Future<void> _fetchFoods() async {
-    final fetchedFoods = await FoodApi.getPopularFoods();
+  Future<void> _fetchData() async {
+    setState(() {
+      isLoading = true;
+      isCategoriesLoading = true;
+    });
+    
+    final results = await Future.wait([
+      FoodApi.getPopularFoods(),
+      FoodApi.getCategories(),
+    ]);
+
     if (mounted) {
       setState(() {
-        foods = fetchedFoods;
+        foods = results[0] as List<Food>;
+        categories = results[1] as List<Category>;
         isLoading = false;
+        isCategoriesLoading = false;
+        if (categories.isNotEmpty) {
+          selectedCategory = categories[0].name;
+        }
       });
     }
   }
@@ -145,17 +161,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.textMain),
                 ),
                 const SizedBox(height: 16),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      _buildCategoryItem('Italian', 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100&h=100&fit=crop'),
-                      _buildCategoryItem('Chinese', 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=100&h=100&fit=crop'),
-                      _buildCategoryItem('Japanese', 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=100&h=100&fit=crop'),
-                      _buildCategoryItem('Vietnamese', 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=100&h=100&fit=crop'),
-                    ],
-                  ),
-                ),
+                isCategoriesLoading
+                    ? const Center(child: CircularProgressIndicator(color: AppTheme.primary))
+                    : categories.isEmpty
+                        ? const Text('No categories available', style: TextStyle(color: AppTheme.textSecondary))
+                        : SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: categories.map((cat) => _buildCategoryItem(cat)).toList(),
+                            ),
+                          ),
                 const SizedBox(height: 32),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -204,35 +219,48 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildCategoryItem(String title, String imageUrl) {
+  Widget _buildCategoryItem(Category category) {
+    bool isSelected = selectedCategory == category.name;
     return Padding(
       padding: const EdgeInsets.only(right: 24.0),
-      child: Column(
-        children: [
-          Container(
-            width: 70,
-            height: 70,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-              boxShadow: AppTheme.softShadow,
-              border: Border.all(color: AppTheme.border),
-              image: DecorationImage(
-                image: NetworkImage(imageUrl),
-                fit: BoxFit.cover,
+      child: GestureDetector(
+        onTap: () => setState(() => selectedCategory = category.name),
+        child: Column(
+          children: [
+            Container(
+              width: 70,
+              height: 70,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+                boxShadow: isSelected ? [
+                  BoxShadow(
+                    color: AppTheme.primary.withOpacity(0.3),
+                    blurRadius: 15,
+                    offset: const Offset(0, 8),
+                  )
+                ] : AppTheme.softShadow,
+                border: Border.all(
+                  color: isSelected ? AppTheme.primary : AppTheme.border,
+                  width: isSelected ? 2 : 1,
+                ),
+                image: DecorationImage(
+                  image: NetworkImage(category.image),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              color: AppTheme.textMuted,
+            const SizedBox(height: 12),
+            Text(
+              category.name,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w700,
+                color: isSelected ? AppTheme.primary : AppTheme.textMuted,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

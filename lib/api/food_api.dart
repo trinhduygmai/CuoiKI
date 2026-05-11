@@ -40,6 +40,26 @@ class FoodApi {
     }
   }
 
+  static Future<List<Category>> getCategories() async {
+    if (USE_MOCK_API) {
+      await Future.delayed(const Duration(milliseconds: 500));
+      return [
+        Category(id: '1', name: 'Italian', image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100&h=100&fit=crop'),
+        Category(id: '2', name: 'Chinese', image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=100&h=100&fit=crop'),
+        Category(id: '3', name: 'Japanese', image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=100&h=100&fit=crop'),
+        Category(id: '4', name: 'Vietnamese', image: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=100&h=100&fit=crop'),
+      ];
+    }
+
+    try {
+      final response = await DioClient.instance.get('/categories');
+      final List data = response.data;
+      return data.map((json) => Category.fromJson(json)).toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
   static Future<List<Food>> getFoodsByCategory(String category) async {
     if (USE_MOCK_API) {
       await Future.delayed(const Duration(milliseconds: 500));
