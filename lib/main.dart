@@ -5,7 +5,12 @@ import 'context/global_provider.dart';
 import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/cart_screen.dart';
+import 'screens/food_list_screen.dart';
 import 'screens/food_detail_screen.dart';
+import 'screens/profile_screen.dart';
+import 'screens/checkout_screen.dart';
+import 'screens/payment_success_screen.dart';
+import 'types/types.dart';
 
 void main() {
   runApp(
@@ -33,11 +38,34 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFFF9F9F9),
       ),
       initialRoute: '/',
-      routes: {
-        '/': (context) => const AuthWrapper(),
-        '/home': (context) => const HomeScreen(),
-        '/cart': (context) => const CartScreen(),
-        // Detail page will use onGenerateRoute or Navigator.push
+      onGenerateRoute: (settings) {
+        if (settings.name == '/') {
+          return MaterialPageRoute(builder: (context) => const AuthWrapper());
+        }
+        if (settings.name == '/home') {
+          return MaterialPageRoute(builder: (context) => const HomeScreen());
+        }
+        if (settings.name == '/cart') {
+          return MaterialPageRoute(builder: (context) => const CartScreen());
+        }
+        if (settings.name == '/profile') {
+          return MaterialPageRoute(builder: (context) => const ProfileScreen());
+        }
+        if (settings.name == '/checkout') {
+          return MaterialPageRoute(builder: (context) => const CheckoutScreen());
+        }
+        if (settings.name == '/success') {
+          return MaterialPageRoute(builder: (context) => const PaymentSuccessScreen());
+        }
+        if (settings.name == '/list') {
+          final category = settings.arguments as String;
+          return MaterialPageRoute(builder: (context) => FoodListScreen(category: category));
+        }
+        if (settings.name == '/detail') {
+          final food = settings.arguments as Food;
+          return MaterialPageRoute(builder: (context) => FoodDetailScreen(food: food));
+        }
+        return null;
       },
     );
   }

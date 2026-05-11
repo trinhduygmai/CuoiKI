@@ -14,6 +14,35 @@ class User {
   }
 }
 
+class Food {
+  final String id;
+  final String name;
+  final String price;
+  final String image;
+  final String category;
+  final String description;
+
+  Food({
+    required this.id,
+    required this.name,
+    required this.price,
+    required this.image,
+    required this.category,
+    this.description = 'Chưa có mô tả cho món ăn này.',
+  });
+
+  factory Food.fromJson(Map<String, dynamic> json) {
+    return Food(
+      id: json['id']?.toString() ?? '',
+      name: json['name'] ?? '',
+      price: json['price']?.toString() ?? '0.00',
+      image: json['image'] ?? '',
+      category: json['category'] ?? '',
+      description: json['description'] ?? 'Chưa có mô tả cho món ăn này.',
+    );
+  }
+}
+
 class AuthResponse {
   final String accessToken;
   final String refreshToken;
