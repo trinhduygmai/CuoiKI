@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/token_service.dart';
 import '../services/auth_service.dart';
 import '../types/types.dart';
 
@@ -11,8 +12,7 @@ class GlobalProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get isAuthenticated => _currentUser != null;
   List<CartItem> get cartItems => _cartItems;
-  double get totalAmount => _cartItems.fold(
-      0, (sum, item) => sum + (double.parse(item.food.price) * item.quantity));
+  double get totalAmount => _cartItems.fold(0, (sum, item) => sum + (double.parse(item.food.price) * item.quantity));
 
   void addToCart(Food food, {int quantity = 1}) {
     final index = _cartItems.indexWhere((item) => item.food.id == food.id);

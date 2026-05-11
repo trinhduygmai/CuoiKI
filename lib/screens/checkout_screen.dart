@@ -14,8 +14,7 @@ class CheckoutScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Checkout',
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+        title: const Text('Checkout', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
       body: Padding(
@@ -23,8 +22,7 @@ class CheckoutScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Delivery',
-                style: TextStyle(fontSize: 34, fontWeight: FontWeight.bold)),
+            const Text('Delivery', style: TextStyle(fontSize: 34, fontWeight: FontWeight.bold)),
             const SizedBox(height: 40),
             _buildSectionTitle('Address details', 'change'),
             const SizedBox(height: 16),
@@ -37,17 +35,13 @@ class CheckoutScreen extends StatelessWidget {
               child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Marvis Igwe',
-                      style:
-                          TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+                  Text('Marvis Igwe', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
                   Divider(height: 24),
-                  Text(
-                    'Km 5.5 Limbe Road, Beside University of Buea, Cameroon',
+                  Text('Km 5.5 Limbe Road, Beside University of Buea, Cameroon', 
                     style: TextStyle(color: Colors.black54, height: 1.5),
                   ),
                   SizedBox(height: 12),
-                  Text('+237 671334455',
-                      style: TextStyle(color: Colors.black54)),
+                  Text('+237 671334455', style: TextStyle(color: Colors.black54)),
                 ],
               ),
             ),
@@ -62,20 +56,18 @@ class CheckoutScreen extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  _buildRadioOption('Door delivery', true),
-                  const Divider(height: 24),
-                  _buildRadioOption('Pick up', false),
+                   _buildRadioOption('Door delivery', true),
+                   const Divider(height: 24),
+                   _buildRadioOption('Pick up', false),
                 ],
               ),
             ),
             const Spacer(),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Total', style: TextStyle(fontSize: 17)),
-                Text('\$23,000',
-                    style:
-                        TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                const Text('Total', style: TextStyle(fontSize: 17)),
+                const Text('\$23,000', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
               ],
             ),
             const SizedBox(height: 24),
@@ -83,16 +75,12 @@ class CheckoutScreen extends StatelessWidget {
               width: double.infinity,
               height: 60,
               child: ElevatedButton(
-                onPressed: () =>
-                    Navigator.pushReplacementNamed(context, '/success'),
+                onPressed: () => Navigator.pushReplacementNamed(context, '/success'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFFF4B3A),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                 ),
-                child: const Text('Proceed to Payment',
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold)),
+                child: const Text('Proceed to Payment', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
               ),
             ),
           ],
@@ -105,8 +93,7 @@ class CheckoutScreen extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(title,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
         Text(action, style: const TextStyle(color: Color(0xFFFF4B3A))),
       ],
     );
