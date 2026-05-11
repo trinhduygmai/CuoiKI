@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widgets/header_menu_button.dart';
 import '../widgets/food_card.dart';
+import '../widgets/app_drawer.dart';
 import '../api/food_api.dart';
 import '../types/types.dart';
 import '../theme/app_theme.dart';
@@ -15,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Food> foods = [];
   bool isLoading = true;
   String selectedCategory = 'Pizza';
@@ -38,6 +40,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: const AppDrawer(),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -48,7 +52,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const HeaderMenuButton(),
+                    HeaderMenuButton(
+                      onTap: () => _scaffoldKey.currentState?.openDrawer(),
+                    ),
                     Column(
                       children: [
                         Text(

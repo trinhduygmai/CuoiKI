@@ -72,6 +72,17 @@ class GlobalProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> register(String fullName, String email, String password) async {
+    try {
+      final response = await AuthService.register(fullName, email, password);
+      _currentUser = response.user;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<void> logout() async {
     await AuthService.logout();
     _currentUser = null;

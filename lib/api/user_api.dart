@@ -24,6 +24,28 @@ class UserApi {
     }
   }
 
+  static Future<AuthResponse?> register(String fullName, String email, String password) async {
+    if (USE_MOCK_API) {
+      await Future.delayed(const Duration(milliseconds: 500));
+      return AuthResponse(
+        accessToken: 'fake-jwt-token-${DateTime.now().millisecondsSinceEpoch}',
+        refreshToken: 'fake-refresh-token-${DateTime.now().millisecondsSinceEpoch}',
+        user: User(id: '1', fullName: fullName, email: email),
+      );
+    }
+
+    try {
+      final response = await DioClient.instance.post('/register', data: {
+        'fullName': fullName,
+        'email': email,
+        'password': password,
+      });
+      return AuthResponse.fromJson(response.data);
+    } catch (e) {
+      return null;
+    }
+  }
+
   static Future<User?> getCurrentUser() async {
     if (USE_MOCK_API) {
       await Future.delayed(const Duration(milliseconds: 300));

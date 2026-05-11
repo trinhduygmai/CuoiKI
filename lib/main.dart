@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'context/global_provider.dart';
 import 'screens/login_screen.dart';
+import 'screens/register_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/cart_screen.dart';
 import 'screens/food_list_screen.dart';
@@ -38,6 +39,12 @@ class MyApp extends StatelessWidget {
       onGenerateRoute: (settings) {
         if (settings.name == '/') {
           return MaterialPageRoute(builder: (context) => const AuthWrapper());
+        }
+        if (settings.name == '/login') {
+          return MaterialPageRoute(builder: (context) => const LoginScreen());
+        }
+        if (settings.name == '/register') {
+          return MaterialPageRoute(builder: (context) => const RegisterScreen());
         }
         if (settings.name == '/home') {
           return MaterialPageRoute(builder: (context) => const HomeScreen());
