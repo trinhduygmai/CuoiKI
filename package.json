@@ -1,20 +1,12 @@
 {
-  "name": "pizza-paradise",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "name": "food-delivery-app",
+  "version": "1.0.0",
+  "description": "Flutter food delivery app",
+  "main": "lib/main.dart",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "flutter build web",
+    "start": "flutter run -d web-server --web-hostname 0.0.0.0 --web-port 3000"
   },
-  "dependencies": {
-
-  },
-  "devDependencies": {
-    "@types/node": "^22.14.0",
-    
-    "typescript": "~5.8.2",
-    "vite": "^6.2.0"
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }

@@ -32,7 +32,7 @@ class FoodApi {
     }
 
     try {
-      final response = await DioClient.instance.get('/foods'); // Adjust endpoint as needed
+      final response = await DioClient.instance.get('/menu-items');
       final List data = response.data;
       return data.map((json) => Food.fromJson(json)).toList();
     } catch (e) {
@@ -60,29 +60,34 @@ class FoodApi {
     }
   }
 
-  static Future<List<Food>> getFoodsByCategory(String category) async {
+  static Future<Food?> getFoodById(String id) async {
+    if (USE_MOCK_API) {
+      return null;
+    }
+    try {
+      final response = await DioClient.instance.get('/menu-items/$id');
+      return Food.fromJson(response.data);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  static Future<List<Food>> getFoodsByCategory(String categoryId) async {
     if (USE_MOCK_API) {
       await Future.delayed(const Duration(milliseconds: 500));
       return [
         Food(
           id: '10',
-          name: '$category Special',
+          name: 'Special Item',
           price: '15.99',
           image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop',
-          category: category,
-        ),
-        Food(
-          id: '11',
-          name: 'Classic $category',
-          price: '10.50',
-          image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop',
-          category: category,
+          category: 'Selected',
         ),
       ];
     }
 
     try {
-      final response = await DioClient.instance.get('/foods', queryParameters: {'category': category});
+      final response = await DioClient.instance.get('/menu-items/category/$categoryId');
       final List data = response.data;
       return data.map((json) => Food.fromJson(json)).toList();
     } catch (e) {

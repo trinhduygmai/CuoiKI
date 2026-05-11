@@ -5,7 +5,7 @@ import '../theme/app_theme.dart';
 import '../widgets/food_card.dart';
 
 class FoodListScreen extends StatefulWidget {
-  final String category;
+  final Category category;
 
   const FoodListScreen({super.key, required this.category});
 
@@ -24,7 +24,7 @@ class _FoodListScreenState extends State<FoodListScreen> {
   }
 
   Future<void> _fetchFoods() async {
-    final fetchedFoods = await FoodApi.getFoodsByCategory(widget.category);
+    final fetchedFoods = await FoodApi.getFoodsByCategory(widget.category.id);
     if (mounted) {
       setState(() {
         foods = fetchedFoods;
@@ -59,7 +59,7 @@ class _FoodListScreenState extends State<FoodListScreen> {
                   Expanded(
                     child: Center(
                       child: Text(
-                        widget.category,
+                        widget.category.name,
                         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: AppTheme.textMain),
                       ),
                     ),

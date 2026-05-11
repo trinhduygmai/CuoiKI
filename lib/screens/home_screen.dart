@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Category> categories = [];
   bool isLoading = true;
   bool isCategoriesLoading = true;
-  String selectedCategory = 'Pizza';
+  Category? selectedCategory;
 
   @override
   void initState() {
@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
         isLoading = false;
         isCategoriesLoading = false;
         if (categories.isNotEmpty) {
-          selectedCategory = categories[0].name;
+          selectedCategory = categories[0];
         }
       });
     }
@@ -180,7 +180,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.textMain),
                     ),
                     TextButton(
-                      onPressed: () => Navigator.pushNamed(context, '/list', arguments: selectedCategory),
+                      onPressed: () {
+                        if (selectedCategory != null) {
+                          Navigator.pushNamed(context, '/list', arguments: selectedCategory);
+                        }
+                      },
                       child: const Text(
                         'SEE ALL',
                         style: TextStyle(color: AppTheme.primary, fontWeight: FontWeight.w900, fontSize: 12),
@@ -220,11 +224,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildCategoryItem(Category category) {
-    bool isSelected = selectedCategory == category.name;
+    bool isSelected = selectedCategory?.id == category.id;
     return Padding(
       padding: const EdgeInsets.only(right: 24.0),
       child: GestureDetector(
-        onTap: () => setState(() => selectedCategory = category.name),
+        onTap: () => setState(() => selectedCategory = category),
         child: Column(
           children: [
             Container(

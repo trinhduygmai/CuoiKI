@@ -62,7 +62,7 @@ class MyApp extends StatelessWidget {
           return MaterialPageRoute(builder: (context) => const PaymentSuccessScreen());
         }
         if (settings.name == '/list') {
-          final category = settings.arguments as String;
+          final category = settings.arguments as Category;
           return MaterialPageRoute(builder: (context) => FoodListScreen(category: category));
         }
         if (settings.name == '/detail') {
