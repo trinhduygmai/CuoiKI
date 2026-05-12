@@ -17,44 +17,43 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<Food> foods = [];
-  List<Category> categories = [];
-  bool isLoading = true;
-  bool isCategoriesLoading = true;
   Category? selectedCategory;
 
   @override
   void initState() {
     super.initState();
-    _fetchData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initData();
+    });
   }
 
-  Future<void> _fetchData() async {
-    setState(() {
-      isLoading = true;
-      isCategoriesLoading = true;
-    });
-    
-    final results = await Future.wait([
-      FoodApi.getPopularFoods(),
-      FoodApi.getCategories(),
-    ]);
-
-    if (mounted) {
+  Future<void> _initData() async {
+    final provider = Provider.of<GlobalProvider>(context, listen: false);
+    await provider.fetchCategories();
+    if (provider.categories.isNotEmpty) {
       setState(() {
-        foods = results[0] as List<Food>;
-        categories = results[1] as List<Category>;
-        isLoading = false;
-        isCategoriesLoading = false;
-        if (categories.isNotEmpty) {
-          selectedCategory = categories[0];
-        }
+        selectedCategory = provider.categories[0];
       });
+      await provider.fetchFoodsByCategory(selectedCategory!.id);
     }
+  }
+
+  Future<void> _onCategorySelected(Category category) async {
+    setState(() {
+      selectedCategory = category;
+    });
+    final provider = Provider.of<GlobalProvider>(context, listen: false);
+    await provider.fetchFoodsByCategory(category.id);
   }
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<GlobalProvider>(context);
+    final categories = provider.categories;
+    final foods = provider.foods;
+    final isCategoriesLoading = provider.isDataLoading && categories.isEmpty;
+    final isFoodsLoading = provider.isDataLoading && foods.isNotEmpty; // This logic might need refinement based on how GlobalProvider handles loading
+
     return Scaffold(
       key: _scaffoldKey,
       drawer: const AppDrawer(),
@@ -92,67 +91,60 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-                    Consumer<GlobalProvider>(
-                      builder: (context, provider, _) => Stack(
-                        children: [
-                          HeaderMenuButton(
-                            icon: Icons.shopping_cart_outlined,
-                            onTap: () => Navigator.pushNamed(context, '/cart'),
-                          ),
-                          if (provider.cartItems.isNotEmpty)
-                            Positioned(
-                              right: 0,
-                              top: 0,
-                              child: Container(
-                                padding: const EdgeInsets.all(4),
-                                decoration: const BoxDecoration(
-                                  color: AppTheme.primary,
-                                  shape: BoxShape.circle,
+                    Stack(
+                      children: [
+                        HeaderMenuButton(
+                          icon: Icons.shopping_cart_outlined,
+                          onTap: () => Navigator.pushNamed(context, '/cart'),
+                        ),
+                        if (provider.cartItems.isNotEmpty)
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: const BoxDecoration(
+                                color: AppTheme.primary,
+                                shape: BoxShape.circle,
+                              ),
+                              constraints: const BoxConstraints(
+                                minWidth: 16,
+                                minHeight: 16,
+                              ),
+                              child: Text(
+                                '${provider.cartItems.length}',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                constraints: const BoxConstraints(
-                                  minWidth: 16,
-                                  minHeight: 16,
-                                ),
-                                child: Text(
-                                  '${provider.cartItems.length}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
+                                textAlign: TextAlign.center,
                               ),
                             ),
-                        ],
-                      ),
+                          ),
+                      ],
                     ),
                   ],
                 ),
                 const SizedBox(height: 32),
-                Consumer<GlobalProvider>(
-                  builder: (context, provider, _) {
-                    final userName = provider.currentUser?.fullName.split(' ')[0] ?? 'ds';
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Hello $userName,',
-                          style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        Text(
-                          'Find your favorite meal!',
-                          style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Hello ${provider.currentUser?.fullName.split(' ')[0] ?? 'User'},',
+                      style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      'Find your favorite meal!',
+                      style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 32),
                 // Categories section
@@ -193,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                isLoading 
+                provider.isDataLoading && foods.isEmpty
                   ? const Center(child: Padding(
                       padding: EdgeInsets.all(40.0),
                       child: CircularProgressIndicator(color: AppTheme.primary),
@@ -205,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             const SizedBox(height: 40),
                             Icon(Icons.fastfood_outlined, size: 64, color: Colors.grey.shade300),
                             const SizedBox(height: 16),
-                            const Text('No food available right now', style: TextStyle(color: AppTheme.textSecondary)),
+                            const Text('No food available for this category', style: TextStyle(color: AppTheme.textSecondary)),
                           ],
                         ),
                       )
@@ -228,7 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Padding(
       padding: const EdgeInsets.only(right: 24.0),
       child: GestureDetector(
-        onTap: () => setState(() => selectedCategory = category),
+        onTap: () => _onCategorySelected(category),
         child: Column(
           children: [
             Container(

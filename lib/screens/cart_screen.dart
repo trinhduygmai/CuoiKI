@@ -83,7 +83,7 @@ class CartScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCartItem(BuildContext context, dynamic item, GlobalProvider provider) {
+  Widget _buildCartItem(BuildContext context, CartItem item, GlobalProvider provider) {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       padding: const EdgeInsets.all(12),
@@ -118,19 +118,25 @@ class CartScreen extends StatelessWidget {
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    _buildMiniQtyButton(Icons.remove, () => provider.updateQuantity(item.food.id, item.quantity - 1)),
+                    _buildMiniQtyButton(Icons.remove, () async {
+                      if (item.quantity > 1) {
+                        await provider.updateQuantity(item.food.id, item.quantity - 1);
+                      }
+                    }),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12.0),
                       child: Text('${item.quantity}', style: const TextStyle(fontWeight: FontWeight.bold)),
                     ),
-                    _buildMiniQtyButton(Icons.add, () => provider.updateQuantity(item.food.id, item.quantity + 1)),
+                    _buildMiniQtyButton(Icons.add, () async {
+                      await provider.updateQuantity(item.food.id, item.quantity + 1);
+                    }),
                   ],
                 ),
               ],
             ),
           ),
           IconButton(
-            onPressed: () => provider.removeFromCart(item.food.id),
+            onPressed: () async => await provider.removeFromCart(item.food.id),
             icon: const Icon(Icons.delete_outline_rounded, color: Colors.redAccent),
           ),
         ],

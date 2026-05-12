@@ -1,10 +1,43 @@
 import 'package:flutter/material.dart';
 
-class CheckoutScreen extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../context/global_provider.dart';
+import '../theme/app_theme.dart';
+import '../widgets/custom_button.dart';
+
+class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
 
   @override
+  State<CheckoutScreen> createState() => _CheckoutScreenState();
+}
+
+class _CheckoutScreenState extends State<CheckoutScreen> {
+  bool isProcessing = false;
+
+  Future<void> _handleCheckout() async {
+    setState(() => isProcessing = true);
+    final provider = Provider.of<GlobalProvider>(context, listen: false);
+    final success = await provider.checkout();
+    
+    if (mounted) {
+      setState(() => isProcessing = false);
+      if (success) {
+        Navigator.pushReplacementNamed(context, '/success');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Checkout failed. Please try again.')),
+        );
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<GlobalProvider>(context);
+    final total = provider.totalAmount;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F2),
       appBar: AppBar(
@@ -67,20 +100,16 @@ class CheckoutScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text('Total', style: TextStyle(fontSize: 17)),
-                const Text('\$23,000', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                Text('\$${(total + 5.0).toStringAsFixed(2)}', style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
               ],
             ),
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
               height: 60,
-              child: ElevatedButton(
-                onPressed: () => Navigator.pushReplacementNamed(context, '/success'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFF4B3A),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                ),
-                child: const Text('Proceed to Payment', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              child: CustomButton(
+                label: isProcessing ? 'Processing...' : 'Proceed to Payment',
+                onPressed: isProcessing ? () {} : _handleCheckout,
               ),
             ),
           ],
@@ -94,7 +123,7 @@ class CheckoutScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-        Text(action, style: const TextStyle(color: Color(0xFFFF4B3A))),
+        Text(action, style: const TextStyle(color: AppTheme.primary)),
       ],
     );
   }
@@ -104,7 +133,7 @@ class CheckoutScreen extends StatelessWidget {
       children: [
         Icon(
           selected ? Icons.radio_button_checked : Icons.radio_button_off,
-          color: const Color(0xFFFF4B3A),
+          color: AppTheme.primary,
         ),
         const SizedBox(width: 12),
         Text(label, style: const TextStyle(fontSize: 17)),
