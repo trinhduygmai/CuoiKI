@@ -3,40 +3,40 @@ import '../types/types.dart';
 import '../constants.dart';
 
 class FoodApi {
-  static Future<List<Food>> getPopularFoods() async {
+  static Future<List<FoodModel>> getPopularFoods() async {
     try {
       final response = await DioClient.instance.get('/restaurant/menu-items');
       final List data = response.data;
-      return data.map((json) => Food.fromJson(json)).toList();
+      return data.map((json) => FoodModel.fromJson(json)).toList();
     } catch (e) {
       return [];
     }
   }
 
-  static Future<List<Category>> getCategories() async {
+  static Future<List<CategoryModel>> getCategories() async {
     try {
       final response = await DioClient.instance.get('/restaurant/categories');
       final List data = response.data;
-      return data.map((json) => Category.fromJson(json)).toList();
+      return data.map((json) => CategoryModel.fromJson(json)).toList();
     } catch (e) {
       return [];
     }
   }
 
-  static Future<Food?> getFoodById(String id) async {
+  static Future<FoodModel?> getFoodById(String id) async {
     try {
       final response = await DioClient.instance.get('/restaurant/menu-items/$id');
-      return Food.fromJson(response.data);
+      return FoodModel.fromJson(response.data);
     } catch (e) {
       return null;
     }
   }
 
-  static Future<List<Food>> getFoodsByCategory(String categoryId) async {
+  static Future<List<FoodModel>> getFoodsByCategory(String categoryId) async {
     try {
       final response = await DioClient.instance.get('/restaurant/menu-items/category/$categoryId');
       final List data = response.data;
-      return data.map((json) => Food.fromJson(json)).toList();
+      return data.map((json) => FoodModel.fromJson(json)).toList();
     } catch (e) {
       return [];
     }

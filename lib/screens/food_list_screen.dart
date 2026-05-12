@@ -5,7 +5,7 @@ import '../theme/app_theme.dart';
 import '../widgets/food_card.dart';
 
 class FoodListScreen extends StatefulWidget {
-  final Category category;
+  final CategoryModel category;
 
   const FoodListScreen({super.key, required this.category});
 
@@ -14,7 +14,7 @@ class FoodListScreen extends StatefulWidget {
 }
 
 class _FoodListScreenState extends State<FoodListScreen> {
-  List<Food> foods = [];
+  List<FoodModel> foods = [];
   bool isLoading = true;
 
   @override

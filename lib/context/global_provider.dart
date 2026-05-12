@@ -6,20 +6,20 @@ import '../api/cart_api.dart';
 import '../types/types.dart';
 
 class GlobalProvider extends ChangeNotifier {
-  User? _currentUser;
+  UserModel? _currentUser;
   bool _isLoading = true;
   List<CartItem> _cartItems = [];
-  List<Category> _categories = [];
-  List<Food> _foods = [];
+  List<CategoryModel> _categories = [];
+  List<FoodModel> _foods = [];
   bool _isDataLoading = false;
 
-  User? get currentUser => _currentUser;
+  UserModel? get currentUser => _currentUser;
   bool get isLoading => _isLoading;
   bool get isDataLoading => _isDataLoading;
   bool get isAuthenticated => _currentUser != null;
   List<CartItem> get cartItems => _cartItems;
-  List<Category> get categories => _categories;
-  List<Food> get foods => _foods;
+  List<CategoryModel> get categories => _categories;
+  List<FoodModel> get foods => _foods;
   double get totalAmount => _cartItems.fold(0, (sum, item) => sum + (double.parse(item.food.price) * item.quantity));
 
   Future<void> fetchCategories() async {
@@ -48,7 +48,7 @@ class GlobalProvider extends ChangeNotifier {
     }
   }
 
-  Future<Food?> fetchFoodDetail(String id) async {
+  Future<FoodModel?> fetchFoodDetail(String id) async {
     return await FoodApi.getFoodById(id);
   }
 
@@ -62,7 +62,7 @@ class GlobalProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> addToCart(Food food, {int quantity = 1}) async {
+  Future<bool> addToCart(FoodModel food, {int quantity = 1}) async {
     if (!isAuthenticated) return false;
     
     final success = await CartApi.addToCart(food.id, quantity);

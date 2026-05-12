@@ -27,7 +27,7 @@ class AuthService {
     await TokenService.clearTokens();
   }
 
-  static Future<User?> checkAuth() async {
+  static Future<UserModel?> checkAuth() async {
     final token = await TokenService.getAccessToken();
     if (token == null) return null;
     

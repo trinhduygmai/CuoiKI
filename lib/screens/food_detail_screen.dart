@@ -6,7 +6,7 @@ import '../theme/app_theme.dart';
 import '../widgets/custom_button.dart';
 
 class FoodDetailScreen extends StatefulWidget {
-  final Food food;
+  final FoodModel food;
 
   const FoodDetailScreen({super.key, required this.food});
 
@@ -16,7 +16,7 @@ class FoodDetailScreen extends StatefulWidget {
 
 class _FoodDetailScreenState extends State<FoodDetailScreen> {
   int quantity = 1;
-  Food? foodDetail;
+  FoodModel? foodDetail;
   bool isLoading = true;
 
   @override

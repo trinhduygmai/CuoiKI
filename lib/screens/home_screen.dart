@@ -17,7 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  Category? selectedCategory;
+  CategoryModel? selectedCategory;
 
   @override
   void initState() {
@@ -38,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> _onCategorySelected(Category category) async {
+  Future<void> _onCategorySelected(CategoryModel category) async {
     setState(() {
       selectedCategory = category;
     });
@@ -215,7 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildCategoryItem(Category category) {
+  Widget _buildCategoryItem(CategoryModel category) {
     bool isSelected = selectedCategory?.id == category.id;
     return Padding(
       padding: const EdgeInsets.only(right: 24.0),
