@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../types/types.dart';
 import '../context/global_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/custom_button.dart';
@@ -71,7 +72,7 @@ class CartScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(24),
                       itemCount: cartItems.length,
                       itemBuilder: (context, index) {
-                        final item = cartItems[index];
+                        CartItem item = cartItems[index];
                         return _buildCartItem(context, item, cartProvider);
                       },
                     ),
