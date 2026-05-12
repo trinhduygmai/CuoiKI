@@ -31,7 +31,10 @@ class UserApi {
   static Future<User?> getCurrentUser() async {
     try {
       final response = await DioClient.instance.get('/restaurant/profile');
-      return User.fromJson(response.data);
+      if (response.data['success'] == true) {
+        return User.fromJson(response.data['user'] ?? response.data);
+      }
+      return null;
     } catch (e) {
       return null;
     }

@@ -2,14 +2,26 @@ class User {
   final String id;
   final String fullName;
   final String email;
+  final String? profileImage;
 
-  User({required this.id, required this.fullName, required this.email});
+  User({
+    required this.id, 
+    required this.fullName, 
+    required this.email,
+    this.profileImage,
+  });
 
   factory User.fromJson(Map<String, dynamic> json) {
+    // Check if we are receiving the root login response or the nested user object
+    final Map<String, dynamic> userMap = json['user'] ?? json;
+    final Map<String, dynamic> profileMap = json['profile'] ?? {};
+    final Map<String, dynamic> metadata = userMap['user_metadata'] ?? userMap['metadata'] ?? {};
+    
     return User(
-      id: json['id'] ?? '',
-      fullName: json['fullName'] ?? '',
-      email: json['email'] ?? '',
+      id: userMap['id'] ?? '',
+      fullName: profileMap['full_name'] ?? metadata['full_name'] ?? userMap['fullName'] ?? 'User',
+      email: userMap['email'] ?? '',
+      profileImage: profileMap['avatar_url'] ?? metadata['avatar_url'],
     );
   }
 }
@@ -19,7 +31,7 @@ class Food {
   final String name;
   final String price;
   final String image;
-  final String category;
+  final String categoryName;
   final String description;
 
   Food({
@@ -27,17 +39,25 @@ class Food {
     required this.name,
     required this.price,
     required this.image,
-    required this.category,
+    required this.categoryName,
     this.description = 'Chưa có mô tả cho món ăn này.',
   });
 
   factory Food.fromJson(Map<String, dynamic> json) {
+    // Handle nested categories(name) from Supabase
+    String catName = '';
+    if (json['categories'] != null && json['categories'] is Map) {
+      catName = json['categories']['name'] ?? '';
+    } else {
+      catName = json['category_name'] ?? json['category'] ?? '';
+    }
+
     return Food(
       id: json['id']?.toString() ?? '',
       name: json['name'] ?? '',
       price: json['price']?.toString() ?? '0.00',
-      image: json['image'] ?? '',
-      category: json['category'] ?? '',
+      image: json['image_url'] ?? json['image'] ?? '',
+      categoryName: catName,
       description: json['description'] ?? 'Chưa có mô tả cho món ăn này.',
     );
   }
@@ -48,6 +68,14 @@ class CartItem {
   int quantity;
 
   CartItem({required this.food, this.quantity = 1});
+
+  factory CartItem.fromJson(Map<String, dynamic> json) {
+    final menuItem = json['menu_items'];
+    return CartItem(
+      food: Food.fromJson(menuItem),
+      quantity: json['quantity'] ?? 1,
+    );
+  }
 }
 
 class Category {
@@ -61,7 +89,7 @@ class Category {
     return Category(
       id: json['id']?.toString() ?? '',
       name: json['name'] ?? '',
-      image: json['image'] ?? '',
+      image: json['image_url'] ?? json['image'] ?? '',
     );
   }
 }
@@ -79,9 +107,9 @@ class AuthResponse {
 
   factory AuthResponse.fromJson(Map<String, dynamic> json) {
     return AuthResponse(
-      accessToken: json['accessToken'] ?? '',
-      refreshToken: json['refreshToken'] ?? '',
-      user: User.fromJson(json['user']),
+      accessToken: json['access_token'] ?? json['accessToken'] ?? '',
+      refreshToken: json['refresh_token'] ?? json['refreshToken'] ?? '',
+      user: User.fromJson(json), // Passed entire root to pick up profile/user keys
     );
   }
 }

@@ -5,14 +5,11 @@ class CartApi {
   static Future<List<CartItem>> getCart() async {
     try {
       final response = await DioClient.instance.get('/cart');
-      final List data = response.data;
-      return data.map((json) {
-        // Assuming the API returns full food object or we can map it
-        return CartItem(
-          food: Food.fromJson(json['food']),
-          quantity: json['quantity'] ?? 1,
-        );
-      }).toList();
+      if (response.data['success'] == true) {
+        final List items = response.data['data']['cart_items'] ?? [];
+        return items.map((json) => CartItem.fromJson(json)).toList();
+      }
+      return [];
     } catch (e) {
       return [];
     }
@@ -21,7 +18,7 @@ class CartApi {
   static Future<bool> addToCart(String foodId, int quantity) async {
     try {
       await DioClient.instance.post('/add', data: {
-        'foodId': foodId,
+        'menu_item_id': foodId,
         'quantity': quantity,
       });
       return true;
@@ -32,8 +29,8 @@ class CartApi {
 
   static Future<bool> checkout() async {
     try {
-      await DioClient.instance.post('/checkout');
-      return true;
+      final response = await DioClient.instance.post('/checkout');
+      return response.data['success'] == true;
     } catch (e) {
       return false;
     }
