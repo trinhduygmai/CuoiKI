@@ -15,10 +15,9 @@ class UserApi {
     }
   }
 
-  static Future<AuthResponse?> register(String fullName, String email, String password) async {
+  static Future<AuthResponse?> register(String email, String password) async {
     try {
       final response = await DioClient.instance.post('/restaurant/register', data: {
-        'fullName': fullName,
         'email': email,
         'password': password,
       });

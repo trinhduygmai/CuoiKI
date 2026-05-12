@@ -12,19 +12,17 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final _fullNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   bool _isSubmitting = false;
 
   void _handleRegister() async {
-    final fullName = _fullNameController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
 
-    if (fullName.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+    if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Vui lòng nhập đầy đủ thông tin')),
       );
@@ -41,7 +39,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() => _isSubmitting = true);
     
     final success = await Provider.of<GlobalProvider>(context, listen: false)
-        .register(fullName, email, password);
+        .register(email, password);
 
     if (mounted) {
       setState(() => _isSubmitting = false);
@@ -92,8 +90,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   style: TextStyle(color: AppTheme.textSecondary, fontSize: 15, height: 1.5),
                 ),
                 const SizedBox(height: 32),
-                _buildInput('Full Name', _fullNameController, Icons.person_outline_rounded, hint: 'John Doe'),
-                const SizedBox(height: 20),
                 _buildInput('Email Address', _emailController, Icons.alternate_email_rounded, hint: 'john@example.com'),
                 const SizedBox(height: 20),
                 _buildInput('Password', _passwordController, Icons.lock_outline_rounded, isPassword: true, hint: '••••••••'),

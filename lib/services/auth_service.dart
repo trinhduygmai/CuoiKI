@@ -13,8 +13,8 @@ class AuthService {
     throw Exception('Login failed');
   }
 
-  static Future<AuthResponse> register(String fullName, String email, String password) async {
-    final response = await UserApi.register(fullName, email, password);
+  static Future<AuthResponse> register(String email, String password) async {
+    final response = await UserApi.register(email, password);
     if (response != null) {
       await TokenService.saveAccessToken(response.accessToken);
       await TokenService.saveRefreshToken(response.refreshToken);
