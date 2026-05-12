@@ -9,7 +9,7 @@ class CartApi {
       return data.map((json) {
         // Assuming the API returns full food object or we can map it
         return CartItem(
-          food: FoodModel.fromJson(json['food']),
+          food: Food.fromJson(json['food']),
           quantity: json['quantity'] ?? 1,
         );
       }).toList();

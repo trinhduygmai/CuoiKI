@@ -3,7 +3,7 @@ import '../theme/app_theme.dart';
 import '../types/types.dart';
 
 class FoodCard extends StatelessWidget {
-  final FoodModel food;
+  final Food food;
   final VoidCallback onTap;
 
   const FoodCard({super.key, required this.food, required this.onTap});

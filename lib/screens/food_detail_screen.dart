@@ -6,7 +6,7 @@ import '../theme/app_theme.dart';
 import '../widgets/custom_button.dart';
 
 class FoodDetailScreen extends StatefulWidget {
-  final FoodModel food;
+  final Food food;
 
   const FoodDetailScreen({super.key, required this.food});
 
@@ -16,59 +16,9 @@ class FoodDetailScreen extends StatefulWidget {
 
 class _FoodDetailScreenState extends State<FoodDetailScreen> {
   int quantity = 1;
-  FoodModel? foodDetail;
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadFoodDetail();
-  }
-
-  Future<void> _loadFoodDetail() async {
-    final provider = Provider.of<GlobalProvider>(context, listen: false);
-    final detail = await provider.fetchFoodDetail(widget.food.id);
-    if (mounted) {
-      setState(() {
-        foodDetail = detail ?? widget.food;
-        isLoading = false;
-      });
-    }
-  }
-
-  Future<void> _handleAddToCart() async {
-    final provider = Provider.of<GlobalProvider>(context, listen: false);
-    final success = await provider.addToCart(foodDetail ?? widget.food, quantity: quantity);
-    
-    if (mounted) {
-      if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Added $quantity ${(foodDetail ?? widget.food).name} to cart'),
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: AppTheme.secondary,
-            action: SnackBarAction(
-              label: 'VIEW CART',
-              textColor: AppTheme.primary,
-              onPressed: () => Navigator.pushNamed(context, '/cart'),
-            ),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to add to cart. Please try again.'),
-            backgroundColor: Colors.redAccent,
-          ),
-        );
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    final food = foodDetail ?? widget.food;
-    
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -80,7 +30,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                 const SizedBox(height: 80),
                 Center(
                   child: Hero(
-                    tag: food.id,
+                    tag: widget.food.id,
                     child: Container(
                       width: 260,
                       height: 260,
@@ -95,9 +45,9 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                         ],
                       ),
                       child: ClipOval(
-                        child: food.image.isNotEmpty 
+                        child: widget.food.image.isNotEmpty 
                           ? Image.network(
-                              food.image, 
+                              widget.food.image, 
                               fit: BoxFit.cover, 
                               errorBuilder: (_, __, ___) => const Icon(Icons.fastfood, size: 100),
                             )
@@ -107,9 +57,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                   ),
                 ),
                 const SizedBox(height: 48),
-                isLoading 
-                  ? const Center(child: CircularProgressIndicator(color: AppTheme.primary))
-                  : Padding(
+                Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 32.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,7 +67,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                         children: [
                           Expanded(
                             child: Text(
-                              food.name,
+                              widget.food.name,
                               style: Theme.of(context).textTheme.displayMedium,
                             ),
                           ),
@@ -135,7 +83,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        '\$${food.price}',
+                        '\$${widget.food.price}',
                         style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.w800,
@@ -158,7 +106,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        food.description,
+                        widget.food.description,
                         style: const TextStyle(color: AppTheme.textSecondary, height: 1.7, fontSize: 15),
                       ),
                       const SizedBox(height: 40),
@@ -220,14 +168,27 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
               ),
             ),
           ),
-          if (!isLoading)
           Positioned(
             bottom: 40,
             left: 32,
             right: 32,
             child: CustomButton(
               label: 'Add to Cart',
-              onPressed: _handleAddToCart,
+              onPressed: () {
+                Provider.of<GlobalProvider>(context, listen: false).addToCart(widget.food, quantity: quantity);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Added $quantity ${widget.food.name} to cart'),
+                    behavior: SnackBarBehavior.floating,
+                    backgroundColor: AppTheme.secondary,
+                    action: SnackBarAction(
+                      label: 'VIEW CART',
+                      textColor: AppTheme.primary,
+                      onPressed: () => Navigator.pushNamed(context, '/cart'),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ],

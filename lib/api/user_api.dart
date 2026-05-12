@@ -28,10 +28,10 @@ class UserApi {
     }
   }
 
-  static Future<UserModel?> getCurrentUser() async {
+  static Future<User?> getCurrentUser() async {
     try {
       final response = await DioClient.instance.get('/restaurant/profile');
-      return UserModel.fromJson(response.data);
+      return User.fromJson(response.data);
     } catch (e) {
       return null;
     }

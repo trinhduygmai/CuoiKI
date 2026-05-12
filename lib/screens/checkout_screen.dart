@@ -1,37 +1,11 @@
 import 'package:flutter/material.dart';
-
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../context/global_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/custom_button.dart';
 
-class CheckoutScreen extends StatefulWidget {
+class CheckoutScreen extends StatelessWidget {
   const CheckoutScreen({super.key});
-
-  @override
-  State<CheckoutScreen> createState() => _CheckoutScreenState();
-}
-
-class _CheckoutScreenState extends State<CheckoutScreen> {
-  bool isProcessing = false;
-
-  Future<void> _handleCheckout() async {
-    setState(() => isProcessing = true);
-    final provider = Provider.of<GlobalProvider>(context, listen: false);
-    final success = await provider.checkout();
-    
-    if (mounted) {
-      setState(() => isProcessing = false);
-      if (success) {
-        Navigator.pushReplacementNamed(context, '/success');
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Checkout failed. Please try again.')),
-        );
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,8 +82,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               width: double.infinity,
               height: 60,
               child: CustomButton(
-                label: isProcessing ? 'Processing...' : 'Proceed to Payment',
-                onPressed: isProcessing ? () {} : _handleCheckout,
+                label: 'Proceed to Payment',
+                onPressed: () => Navigator.pushReplacementNamed(context, '/success'),
               ),
             ),
           ],

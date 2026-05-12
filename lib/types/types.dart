@@ -1,12 +1,12 @@
-class UserModel {
+class User {
   final String id;
   final String fullName;
   final String email;
 
-  UserModel({required this.id, required this.fullName, required this.email});
+  User({required this.id, required this.fullName, required this.email});
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
       id: json['id'] ?? '',
       fullName: json['fullName'] ?? '',
       email: json['email'] ?? '',
@@ -14,7 +14,7 @@ class UserModel {
   }
 }
 
-class FoodModel {
+class Food {
   final String id;
   final String name;
   final String price;
@@ -22,7 +22,7 @@ class FoodModel {
   final String category;
   final String description;
 
-  FoodModel({
+  Food({
     required this.id,
     required this.name,
     required this.price,
@@ -31,8 +31,8 @@ class FoodModel {
     this.description = 'Chưa có mô tả cho món ăn này.',
   });
 
-  factory FoodModel.fromJson(Map<String, dynamic> json) {
-    return FoodModel(
+  factory Food.fromJson(Map<String, dynamic> json) {
+    return Food(
       id: json['id']?.toString() ?? '',
       name: json['name'] ?? '',
       price: json['price']?.toString() ?? '0.00',
@@ -44,21 +44,21 @@ class FoodModel {
 }
 
 class CartItem {
-  final FoodModel food;
+  final Food food;
   int quantity;
 
   CartItem({required this.food, this.quantity = 1});
 }
 
-class CategoryModel {
+class Category {
   final String id;
   final String name;
   final String image;
 
-  CategoryModel({required this.id, required this.name, required this.image});
+  Category({required this.id, required this.name, required this.image});
 
-  factory CategoryModel.fromJson(Map<String, dynamic> json) {
-    return CategoryModel(
+  factory Category.fromJson(Map<String, dynamic> json) {
+    return Category(
       id: json['id']?.toString() ?? '',
       name: json['name'] ?? '',
       image: json['image'] ?? '',
@@ -69,7 +69,7 @@ class CategoryModel {
 class AuthResponse {
   final String accessToken;
   final String refreshToken;
-  final UserModel user;
+  final User user;
 
   AuthResponse({
     required this.accessToken,
@@ -81,7 +81,7 @@ class AuthResponse {
     return AuthResponse(
       accessToken: json['accessToken'] ?? '',
       refreshToken: json['refreshToken'] ?? '',
-      user: UserModel.fromJson(json['user']),
+      user: User.fromJson(json['user']),
     );
   }
 }

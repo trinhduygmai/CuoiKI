@@ -6,20 +6,20 @@ import '../api/cart_api.dart';
 import '../types/types.dart';
 
 class GlobalProvider extends ChangeNotifier {
-  UserModel? _currentUser;
+  User? _currentUser;
   bool _isLoading = true;
   List<CartItem> _cartItems = [];
-  List<CategoryModel> _categories = [];
-  List<FoodModel> _foods = [];
+  List<Category> _categories = [];
+  List<Food> _foods = [];
   bool _isDataLoading = false;
 
-  UserModel? get currentUser => _currentUser;
+  User? get currentUser => _currentUser;
   bool get isLoading => _isLoading;
   bool get isDataLoading => _isDataLoading;
   bool get isAuthenticated => _currentUser != null;
   List<CartItem> get cartItems => _cartItems;
-  List<CategoryModel> get categories => _categories;
-  List<FoodModel> get foods => _foods;
+  List<Category> get categories => _categories;
+  List<Food> get foods => _foods;
   double get totalAmount => _cartItems.fold(0, (sum, item) => sum + (double.parse(item.food.price) * item.quantity));
 
   Future<void> fetchCategories() async {
@@ -48,7 +48,7 @@ class GlobalProvider extends ChangeNotifier {
     }
   }
 
-  Future<FoodModel?> fetchFoodDetail(String id) async {
+  Future<Food?> fetchFoodDetail(String id) async {
     return await FoodApi.getFoodById(id);
   }
 
@@ -62,7 +62,7 @@ class GlobalProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> addToCart(FoodModel food, {int quantity = 1}) async {
+  Future<bool> addToCart(Food food, {int quantity = 1}) async {
     if (!isAuthenticated) return false;
     
     final success = await CartApi.addToCart(food.id, quantity);
@@ -84,25 +84,21 @@ class GlobalProvider extends ChangeNotifier {
     return false;
   }
 
-  Future<void> updateQuantity(String foodId, int quantity) async {
-    if (!isAuthenticated) return;
-    
-    // In this API, we might just call addToCart with the new quantity? 
-    // Or if the API is 'set quantity', we'd need another method.
-    // Given the prompt only showed /add, we'll assume /add updates or adds.
-    // If quantity is 0, we treat it as remove if there was a remove API.
-    // For now we just implement the API call.
-    
-    await CartApi.addToCart(foodId, quantity);
-    await getCart();
+  void updateQuantityLocal(String foodId, int quantity) {
+    if (quantity <= 0) {
+      _cartItems.removeWhere((item) => item.food.id == foodId);
+    } else {
+      final index = _cartItems.indexWhere((item) => item.food.id == foodId);
+      if (index >= 0) {
+        _cartItems[index].quantity = quantity;
+      }
+    }
+    notifyListeners();
   }
 
-  Future<void> removeFromCart(String foodId) async {
-    if (!isAuthenticated) return;
-    // Assuming /add with quantity 0 removes it, or the API just doesn't support explicit remove yet.
-    // We'll call /add with 0 as a placeholder if remove endpoint is unknown.
-    await CartApi.addToCart(foodId, 0);
-    await getCart();
+  void removeFromCartLocal(String foodId) {
+    _cartItems.removeWhere((item) => item.food.id == foodId);
+    notifyListeners();
   }
 
   Future<void> checkAuth() async {

@@ -118,25 +118,19 @@ class CartScreen extends StatelessWidget {
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    _buildMiniQtyButton(Icons.remove, () async {
-                      if (item.quantity > 1) {
-                        await provider.updateQuantity(item.food.id, item.quantity - 1);
-                      }
-                    }),
+                    _buildMiniQtyButton(Icons.remove, () => provider.updateQuantityLocal(item.food.id, item.quantity - 1)),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12.0),
                       child: Text('${item.quantity}', style: const TextStyle(fontWeight: FontWeight.bold)),
                     ),
-                    _buildMiniQtyButton(Icons.add, () async {
-                      await provider.updateQuantity(item.food.id, item.quantity + 1);
-                    }),
+                    _buildMiniQtyButton(Icons.add, () => provider.updateQuantityLocal(item.food.id, item.quantity + 1)),
                   ],
                 ),
               ],
             ),
           ),
           IconButton(
-            onPressed: () async => await provider.removeFromCart(item.food.id),
+            onPressed: () => provider.removeFromCartLocal(item.food.id),
             icon: const Icon(Icons.delete_outline_rounded, color: Colors.redAccent),
           ),
         ],
