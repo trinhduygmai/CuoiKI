@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../widgets/header_menu_button.dart';
 import '../widgets/food_card.dart';
 import '../widgets/app_drawer.dart';
-import '../api/food_api.dart';
 import '../types/types.dart';
 import '../theme/app_theme.dart';
 import '../context/global_provider.dart';
@@ -52,7 +51,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final categories = provider.categories;
     final foods = provider.foods;
     final isCategoriesLoading = provider.isDataLoading && categories.isEmpty;
-    final isFoodsLoading = provider.isDataLoading && foods.isNotEmpty; // This logic might need refinement based on how GlobalProvider handles loading
+    final isFoodsLoading = provider.isDataLoading &&
+        foods
+            .isNotEmpty; // This logic might need refinement based on how GlobalProvider handles loading
 
     return Scaffold(
       key: _scaffoldKey,
@@ -60,7 +61,8 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -133,16 +135,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     Text(
                       'Hello ${provider.currentUser?.fullName.split(' ')[0] ?? 'User'},',
                       style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w600,
-                      ),
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600,
+                          ),
                     ),
                     Text(
                       'Find your favorite meal!',
                       style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w800,
-                      ),
+                            fontSize: 24,
+                            fontWeight: FontWeight.w800,
+                          ),
                     ),
                   ],
                 ),
@@ -150,17 +152,25 @@ class _HomeScreenState extends State<HomeScreen> {
                 // Categories section
                 const Text(
                   'Categories',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.textMain),
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      color: AppTheme.textMain),
                 ),
                 const SizedBox(height: 16),
                 isCategoriesLoading
-                    ? const Center(child: CircularProgressIndicator(color: AppTheme.primary))
+                    ? const Center(
+                        child:
+                            CircularProgressIndicator(color: AppTheme.primary))
                     : categories.isEmpty
-                        ? const Text('No categories available', style: TextStyle(color: AppTheme.textSecondary))
+                        ? const Text('No categories available',
+                            style: TextStyle(color: AppTheme.textSecondary))
                         : SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Row(
-                              children: categories.map((cat) => _buildCategoryItem(cat)).toList(),
+                              children: categories
+                                  .map((cat) => _buildCategoryItem(cat))
+                                  .toList(),
                             ),
                           ),
                 const SizedBox(height: 32),
@@ -169,44 +179,61 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     const Text(
                       'Featured items',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.textMain),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: AppTheme.textMain),
                     ),
                     TextButton(
                       onPressed: () {
                         if (selectedCategory != null) {
-                          Navigator.pushNamed(context, '/list', arguments: selectedCategory);
+                          Navigator.pushNamed(context, '/list',
+                              arguments: selectedCategory);
                         }
                       },
                       child: const Text(
                         'SEE ALL',
-                        style: TextStyle(color: AppTheme.primary, fontWeight: FontWeight.w900, fontSize: 12),
+                        style: TextStyle(
+                            color: AppTheme.primary,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 12),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
                 provider.isDataLoading && foods.isEmpty
-                  ? const Center(child: Padding(
-                      padding: EdgeInsets.all(40.0),
-                      child: CircularProgressIndicator(color: AppTheme.primary),
-                    ))
-                  : foods.isEmpty
-                    ? Center(
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 40),
-                            Icon(Icons.fastfood_outlined, size: 64, color: Colors.grey.shade300),
-                            const SizedBox(height: 16),
-                            const Text('No food available for this category', style: TextStyle(color: AppTheme.textSecondary)),
-                          ],
-                        ),
-                      )
-                    : Column(
-                        children: foods.map((food) => FoodCard(
-                          food: food,
-                          onTap: () => Navigator.pushNamed(context, '/detail', arguments: food),
-                        )).toList(),
-                      ),
+                    ? const Center(
+                        child: Padding(
+                        padding: EdgeInsets.all(40.0),
+                        child:
+                            CircularProgressIndicator(color: AppTheme.primary),
+                      ))
+                    : foods.isEmpty
+                        ? Center(
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 40),
+                                Icon(Icons.fastfood_outlined,
+                                    size: 64, color: Colors.grey.shade300),
+                                const SizedBox(height: 16),
+                                const Text(
+                                    'No food available for this category',
+                                    style: TextStyle(
+                                        color: AppTheme.textSecondary)),
+                              ],
+                            ),
+                          )
+                        : Column(
+                            children: foods
+                                .map((food) => FoodCard(
+                                      food: food,
+                                      onTap: () => Navigator.pushNamed(
+                                          context, '/detail',
+                                          arguments: food),
+                                    ))
+                                .toList(),
+                          ),
               ],
             ),
           ),
@@ -229,13 +256,15 @@ class _HomeScreenState extends State<HomeScreen> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.white,
-                boxShadow: isSelected ? [
-                  BoxShadow(
-                    color: AppTheme.primary.withOpacity(0.3),
-                    blurRadius: 15,
-                    offset: const Offset(0, 8),
-                  )
-                ] : AppTheme.softShadow,
+                boxShadow: isSelected
+                    ? [
+                        BoxShadow(
+                          color: AppTheme.primary.withOpacity(0.3),
+                          blurRadius: 15,
+                          offset: const Offset(0, 8),
+                        )
+                      ]
+                    : AppTheme.softShadow,
                 border: Border.all(
                   color: isSelected ? AppTheme.primary : AppTheme.border,
                   width: isSelected ? 2 : 1,

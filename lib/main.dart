@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'context/global_provider.dart';
 import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
@@ -44,7 +43,8 @@ class MyApp extends StatelessWidget {
           return MaterialPageRoute(builder: (context) => const LoginScreen());
         }
         if (settings.name == '/register') {
-          return MaterialPageRoute(builder: (context) => const RegisterScreen());
+          return MaterialPageRoute(
+              builder: (context) => const RegisterScreen());
         }
         if (settings.name == '/home') {
           return MaterialPageRoute(builder: (context) => const HomeScreen());
@@ -56,18 +56,22 @@ class MyApp extends StatelessWidget {
           return MaterialPageRoute(builder: (context) => const ProfileScreen());
         }
         if (settings.name == '/checkout') {
-          return MaterialPageRoute(builder: (context) => const CheckoutScreen());
+          return MaterialPageRoute(
+              builder: (context) => const CheckoutScreen());
         }
         if (settings.name == '/success') {
-          return MaterialPageRoute(builder: (context) => const PaymentSuccessScreen());
+          return MaterialPageRoute(
+              builder: (context) => const PaymentSuccessScreen());
         }
         if (settings.name == '/list') {
           final category = settings.arguments as Category;
-          return MaterialPageRoute(builder: (context) => FoodListScreen(category: category));
+          return MaterialPageRoute(
+              builder: (context) => FoodListScreen(category: category));
         }
         if (settings.name == '/detail') {
           final food = settings.arguments as Food;
-          return MaterialPageRoute(builder: (context) => FoodDetailScreen(food: food));
+          return MaterialPageRoute(
+              builder: (context) => FoodDetailScreen(food: food));
         }
         return null;
       },
@@ -81,7 +85,7 @@ class AuthWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<GlobalProvider>(context);
-    
+
     if (authProvider.isLoading) {
       return const Scaffold(
         body: Center(
@@ -89,7 +93,9 @@ class AuthWrapper extends StatelessWidget {
         ),
       );
     }
-    
-    return authProvider.isAuthenticated ? const HomeScreen() : const LoginScreen();
+
+    return authProvider.isAuthenticated
+        ? const HomeScreen()
+        : const LoginScreen();
   }
 }

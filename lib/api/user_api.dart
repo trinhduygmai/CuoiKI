@@ -1,11 +1,11 @@
 import '../api/dio_client.dart';
 import '../types/types.dart';
-import '../constants.dart';
 
 class UserApi {
   static Future<AuthResponse?> login(String email, String password) async {
     try {
-      final response = await DioClient.instance.post('/restaurant/login', data: {
+      final response =
+          await DioClient.instance.post('/restaurant/login', data: {
         'email': email,
         'password': password,
       });
@@ -17,7 +17,8 @@ class UserApi {
 
   static Future<AuthResponse?> register(String email, String password) async {
     try {
-      final response = await DioClient.instance.post('/restaurant/register', data: {
+      final response =
+          await DioClient.instance.post('/restaurant/register', data: {
         'email': email,
         'password': password,
       });
@@ -41,7 +42,8 @@ class UserApi {
 
   static Future<bool> forgotPassword(String email) async {
     try {
-      await DioClient.instance.post('/restaurant/forgot-password', data: {'email': email});
+      await DioClient.instance
+          .post('/restaurant/forgot-password', data: {'email': email});
       return true;
     } catch (e) {
       return false;
