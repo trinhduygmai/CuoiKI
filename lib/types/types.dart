@@ -12,8 +12,8 @@ class User {
   final String? profileImage;
 
   User({
-    required this.id, 
-    required this.fullName, 
+    required this.id,
+    required this.fullName,
     required this.email,
     this.profileImage,
   });
@@ -22,11 +22,15 @@ class User {
     // Check if we are receiving the root login response or the nested user object
     final Map<String, dynamic> userMap = json['user'] ?? json;
     final Map<String, dynamic> profileMap = json['profile'] ?? {};
-    final Map<String, dynamic> metadata = userMap['user_metadata'] ?? userMap['metadata'] ?? {};
-    
+    final Map<String, dynamic> metadata =
+        userMap['user_metadata'] ?? userMap['metadata'] ?? {};
+
     return User(
       id: userMap['id'] ?? '',
-      fullName: normalizeText(profileMap['full_name'] ?? metadata['full_name'] ?? userMap['fullName'] ?? 'User'),
+      fullName: normalizeText(profileMap['full_name'] ??
+          metadata['full_name'] ??
+          userMap['fullName'] ??
+          'User'),
       email: normalizeText(userMap['email'] ?? ''),
       profileImage: profileMap['avatar_url'] ?? metadata['avatar_url'],
     );
@@ -65,7 +69,8 @@ class Food {
       price: json['price']?.toString() ?? '0.00',
       image: json['image_url'] ?? json['image'] ?? '',
       categoryName: normalizeText(catName),
-      description: normalizeText(json['description'] ?? 'Chưa có mô tả cho món ăn này.'),
+      description:
+          normalizeText(json['description'] ?? 'Chưa có mô tả cho món ăn này.'),
     );
   }
 }
@@ -116,7 +121,8 @@ class AuthResponse {
     return AuthResponse(
       accessToken: json['access_token'] ?? json['accessToken'] ?? '',
       refreshToken: json['refresh_token'] ?? json['refreshToken'] ?? '',
-      user: User.fromJson(json), // Passed entire root to pick up profile/user keys
+      user: User.fromJson(
+          json), // Passed entire root to pick up profile/user keys
     );
   }
 }

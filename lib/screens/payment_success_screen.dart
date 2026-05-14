@@ -41,14 +41,19 @@ class PaymentSuccessScreen extends StatelessWidget {
                 height: 60,
                 child: ElevatedButton(
                   onPressed: () {
-                    Provider.of<GlobalProvider>(context, listen: false).clearCart();
-                    Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+                    Provider.of<GlobalProvider>(context, listen: false)
+                        .clearCart();
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, '/home', (route) => false);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFFF4B3A),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30)),
                   ),
-                  child: const Text('Back to Home', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  child: const Text('Back to Home',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold)),
                 ),
               ),
             ],

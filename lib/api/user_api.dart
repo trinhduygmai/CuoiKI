@@ -33,7 +33,8 @@ class UserApi {
     try {
       final response = await DioClient.instance.get('/restaurant/profile');
       if (response.data['success'] == true) {
-        final userPayload = response.data['data'] ?? response.data['user'] ?? response.data;
+        final userPayload =
+            response.data['data'] ?? response.data['user'] ?? response.data;
         return User.fromJson(userPayload);
       }
       return null;

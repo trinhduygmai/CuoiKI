@@ -30,7 +30,8 @@ class CartApi {
     try {
       final response = await DioClient.instance.get('/restaurant/cart');
       if (response.data['success'] == true) {
-        final List items = response.data['data']['cart_items'] ?? response.data['data'] ?? [];
+        final List items =
+            response.data['data']['cart_items'] ?? response.data['data'] ?? [];
         return items
             .map((json) => CartItem.fromJson(json))
             .where((item) => item.quantity > 0)
