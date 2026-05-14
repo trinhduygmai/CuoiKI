@@ -79,11 +79,15 @@ class GlobalProvider extends ChangeNotifier {
     if (!isAuthenticated) return false;
     final success = await CartApi.checkout();
     if (success) {
-      _cartItems.clear();
-      notifyListeners();
+      await clearCart();
       return true;
     }
     return false;
+  }
+
+  Future<void> clearCart() async {
+    _cartItems = [];
+    notifyListeners();
   }
 
   Future<void> updateQuantity(String foodId, int quantity) async {

@@ -14,7 +14,8 @@
         "google_fonts",
         "intl",
         "jwt_decoder",
-        "provider"
+        "provider",
+        "unorm_dart"
       ],
       "devDependencies": [
         "flutter_lints",
@@ -45,6 +46,11 @@
         "test_api",
         "vector_math"
       ]
+    },
+    {
+      "name": "unorm_dart",
+      "version": "0.3.2",
+      "dependencies": []
     },
     {
       "name": "intl",

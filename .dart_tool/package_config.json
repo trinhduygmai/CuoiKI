@@ -350,6 +350,12 @@
       "languageVersion": "3.5"
     },
     {
+      "name": "unorm_dart",
+      "rootUri": "file:///C:/Users/trinh/AppData/Local/Pub/Cache/hosted/pub.dev/unorm_dart-0.3.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "vector_math",
       "rootUri": "file:///C:/Users/trinh/AppData/Local/Pub/Cache/hosted/pub.dev/vector_math-2.2.0",
       "packageUri": "lib/",

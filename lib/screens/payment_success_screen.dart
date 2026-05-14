@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../context/global_provider.dart';
 
 class PaymentSuccessScreen extends StatelessWidget {
   const PaymentSuccessScreen({super.key});
@@ -38,7 +40,10 @@ class PaymentSuccessScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 60,
                 child: ElevatedButton(
-                  onPressed: () => Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false),
+                  onPressed: () {
+                    Provider.of<GlobalProvider>(context, listen: false).clearCart();
+                    Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFFF4B3A),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),

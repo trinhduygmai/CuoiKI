@@ -24,6 +24,7 @@ class UserApi {
       });
       return AuthResponse.fromJson(response.data);
     } catch (e) {
+      print('Registration error: $e');
       return null;
     }
   }
@@ -32,7 +33,8 @@ class UserApi {
     try {
       final response = await DioClient.instance.get('/restaurant/profile');
       if (response.data['success'] == true) {
-        return User.fromJson(response.data['user'] ?? response.data);
+        final userPayload = response.data['data'] ?? response.data['user'] ?? response.data;
+        return User.fromJson(userPayload);
       }
       return null;
     } catch (e) {

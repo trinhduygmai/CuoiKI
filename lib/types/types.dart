@@ -1,3 +1,10 @@
+import 'package:unorm_dart/unorm_dart.dart' as unorm;
+
+String normalizeText(String? text) {
+  if (text == null || text.isEmpty) return '';
+  return unorm.nfc(text);
+}
+
 class User {
   final String id;
   final String fullName;
@@ -19,8 +26,8 @@ class User {
     
     return User(
       id: userMap['id'] ?? '',
-      fullName: profileMap['full_name'] ?? metadata['full_name'] ?? userMap['fullName'] ?? 'User',
-      email: userMap['email'] ?? '',
+      fullName: normalizeText(profileMap['full_name'] ?? metadata['full_name'] ?? userMap['fullName'] ?? 'User'),
+      email: normalizeText(userMap['email'] ?? ''),
       profileImage: profileMap['avatar_url'] ?? metadata['avatar_url'],
     );
   }
@@ -54,11 +61,11 @@ class Food {
 
     return Food(
       id: json['id']?.toString() ?? '',
-      name: json['name'] ?? '',
+      name: normalizeText(json['name'] ?? ''),
       price: json['price']?.toString() ?? '0.00',
       image: json['image_url'] ?? json['image'] ?? '',
-      categoryName: catName,
-      description: json['description'] ?? 'Chưa có mô tả cho món ăn này.',
+      categoryName: normalizeText(catName),
+      description: normalizeText(json['description'] ?? 'Chưa có mô tả cho món ăn này.'),
     );
   }
 }
@@ -88,7 +95,7 @@ class Category {
   factory Category.fromJson(Map<String, dynamic> json) {
     return Category(
       id: json['id']?.toString() ?? '',
-      name: json['name'] ?? '',
+      name: normalizeText(json['name'] ?? ''),
       image: json['image_url'] ?? json['image'] ?? '',
     );
   }
